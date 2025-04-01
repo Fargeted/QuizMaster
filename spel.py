@@ -37,22 +37,27 @@ class Frågor(Person):
 
 def frågor(x, y):
     y = ["Sport", "Historia", "Vetenskap", "Popkultur", "Sånger"]
-    
+
+def hämta_person_info(gubbe): # Hämtar allt information om användaren ifall det behövs
+    return gubbe.get_namn(), gubbe.get_ålder(), gubbe.get_kön()
+
+quit()
+while True:
+    try:
+        namn = input("\nVad heter du?\n")
+        ålder = int(input("\nHur gammal är du?\n"))
+        kön =  input("\nÄr du en man eller en kvinna?\n")
+
+        användare = Person(namn.capitalize(), ålder, kön.capitalize()) #Tar variablerna ovanför och sparar det i variabeln användare
+        programledare = Person("René", 48, "Man") #Skriver in information för programledaren
+        print(hämta_person_info(användare)) #Printar allt information om användaren
+        print(hämta_person_info(programledare)) #Printar allt information om programledaren
+
+        break
+
+    except ValueError:
+        print("\nSnälla skriv in ditt ålder med siffror, inte bokstäver!")
+        continue
 
 
-#while True:
- #   try:
-  #      namn = input("\nVad heter du?\n")
-   #     ålder = int(input("\nHur gammal är du?\n"))
-    #    kön =  input("\nÄr du en man eller en kvinna?\n")
-
-     #   användare = Person(namn.capitalize(), ålder, kön.capitalize())
-      #  programledare = Frågor(programledare.set_namn("René"), programledare.get_namn(), programledare)
-
-       # print(användare.get_namn(), användare.get_ålder(), användare.get_kön())
-        #break
-
-    #except ValueError:
-     #   print("\nSnälla skriv in ditt ålder med siffror, inte bokstäver!")
-      #  continue
 
