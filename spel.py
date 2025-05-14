@@ -58,11 +58,42 @@ class Frågor(Person):
 
     
 
+#FUNKTIONER
 def hämta_person_info(gubbe): # Hämtar allt information om användaren ifall det behövs
     return gubbe.get_namn(), gubbe.get_ålder(), gubbe.get_kön()
 
-def hämta_fråga(fråga): #hämtar frågor och printar det lik hämta_person_info
+def hämta_fråga(fråga): #hämtar frågor och printar det lik hämta_person_info() funktionen ovanför
     return fråga.get_kategori(), fråga.get_fråga_text(), fråga.get_rätt_svar(), fråga.get_fel_svar() 
+
+#FRÅGOR
+
+"vetenskap"
+q1 = Frågor("Vetenskap", "Vad heter den största planet i vårt solsystem?", "Jupiter", ["Saturnus, Mars, Jorden"]) #Sista kategorin ligger i en lista så att mer än 1 fråga kan passa i fel fråga kategorin
+q2 = Frågor("Vetenskap", "Vilket grundämne har kemiska beteckningen O?", "Syre", ["Väte", "Kväve", "Kol"])
+q3 = Frågor("Vetenskap", "Hur många ben har en vuxen människa normalt?", "206", ["207", "201", "212"])
+q4 = Frågor("Vetenskap", "Vad kallas den process där växter omvandlar solljus till energi?", "Fotosyntes", ["Förbränning", "Cellandning", "Fermentering"])
+q5 = Frågor("Vetenskap", "Vilken vetenskapsmän formulerade gravitationslagen?", "Isaac Newton", ["Albert Einstein", "Galileo Galilei", "Nikola Tesla"])
+
+"matte"
+q6 = Frågor("Matematik", "Vad är 7 x 8?", "56", ["54", "67", "49"])
+q7 = Frågor("Matematik", "Vad är roten ur 144?", "12", ["14", "11", "8"])
+q8 = Frågor("Matematik", "Hur många grader är en rät vinkel?", "90", ["45", "180", "75"])
+q9 = Frågor("Matematik", "Vad är de första två decimal tecken inom PI?", "14", ["17", "15", "12" ])
+q10 = Frågor("Matematik", "Hur räknar man ut arean av en rektangel?", "Basen x Höjden", ["Basen x Höjden x Längden", "Höjden delad på basen", "Kvadratroten av basen"])
+
+"popkultur"
+q11 = Frågor("Popkultur", "Vem spelade rollen som Harry Potter i filmerna?", "Daniel Radcliffe", ["Snubben från 'The Green Mile'", "Tom Felton", "Elijah Wood"])
+q12 = Frågor("Popkultur", "Vilken artist skapade albumet 'IGOR'?", "Tyler, the Creator", ["Bruno Mars", "Billie Eilish", "Fetty Wap"] )
+q13 = Frågor("Popkultur", "Vem anses vara skaparen av moderna film zombies?", "George Romero", ["Robert Kirkman", "Danny Boyle", "Abe Forsythe"])
+q14 = Frågor("Popkultur", "Vilket år visades pilotavsnitten av 'smiling friends' för första gången?", "2020", ["2021", "2022", "2019"])
+q15 = Frågor("Popkultur", "Vilket år släpptes 'Graduation' av Kanye West?", "2007", ["2006", "2000", "2012"])
+
+"historia"
+q16 = Frågor("Historia", "Vem var Sveriges kung år 1700?", "Karl XII", ["Gustav II Adolf", "Karl XI", "Oscar I"])
+q17 = Frågor("Historia", "När föll Berlinmuren?", "1989", ["1991", "1985", "1990"])
+q18 = Frågor("Historia", "Vem var statsminister i Sverige under andra världskriget?", "Per Albin Hansson", ["Tage Erlander", "Olof Palme", "Carl Gustaf Ekman"])
+q19 = Frågor("Historia", "I vilket land startade den industriella revolutionen?", "Storbritannien", ["USA", "Frankrike", "Tyskland"])
+q20 = Frågor("Historia", "Vilket år blev Sverige medlem i EU?", "1995", ["1990", "1993", "2001"])
 
 
 while True:
