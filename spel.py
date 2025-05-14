@@ -24,9 +24,8 @@ class Person:
     def set_kön(self, kön):
         self.__namn = kön
 
-class Frågor(Person):
+class Frågor:
     def __init__(self, kategori, fråga_text, rätt_svar, fel_svar):
-        super().__init__(self)
         self.__kategori = kategori #Vilken kategori frågan tillhör till
         self.__fråga_text = fråga_text # Vad frågan är t.ex. "vad är 2+2"
         self.__rätt_svar = rätt_svar # Används för att spara rätt fråga
@@ -56,7 +55,26 @@ class Frågor(Person):
     def set_fel_svar(self, fel_svar):
         self.__fel_svar = fel_svar
 
-    
+    def ställ_fråga(self):
+        print(f"\nKategori: {self.__kategori}")
+        print(f'\n"{self.__fråga_text}"\n')
+
+        alternativ = self.__fel_svar + [self.__rätt_svar] # lägger till den "rätta svaret" i listan som är "fel svar"
+        random.shuffle(alternativ) # ändrar på ordningen av listans frågor så att den rätta svaret ligger inte på samma plats varje gång
+
+        for i, alt in enumerate(alternativ): # I börjar leta runt i varje index av listan. Alltså börjar den på 0 och slutar på 3. Alt kollar också inom index fast hämtar själva indexets str värde
+            print(f"{i+1}. {alt}") # I är adderad med 1 så att listan visar "1. (alt) 2. (alt) 3. (alt) 4. (alt)", Enumarate används för att hämta både index värde (platsnummer) och värde (datatyp)
+
+        try:
+            val = int(input("\n|Ditt svar 1-4|: "))
+            if alternativ[val-1] == self.__rätt_svar: #listan har en värde från 0 - 3 och alternativen visar 1 - 4, därför måste svaret minskas med 1 för att kontrollera att svaret var rätt
+                print("Korrekt!")
+            else:
+                print(f"Fel! Rätt svar var: {self.__rätt_svar}")
+        
+        except:
+            print("Ogiltig svar.")
+            
 
 #FUNKTIONER
 def hämta_person_info(gubbe): # Hämtar allt information om användaren ifall det behövs
@@ -68,7 +86,7 @@ def hämta_fråga(fråga): #hämtar frågor och printar det lik hämta_person_in
 #FRÅGOR
 
 "vetenskap"
-q1 = Frågor("Vetenskap", "Vad heter den största planet i vårt solsystem?", "Jupiter", ["Saturnus, Mars, Jorden"]) #Sista kategorin ligger i en lista så att mer än 1 fråga kan passa i fel fråga kategorin
+q1 = Frågor("Vetenskap", "Vad heter den största planet i vårt solsystem?", "Jupiter", ["Saturnus", "Mars", "Jorden"]) #Sista kategorin ligger i en lista så att mer än 1 fråga kan passa i fel fråga kategorin
 q2 = Frågor("Vetenskap", "Vilket grundämne har kemiska beteckningen O?", "Syre", ["Väte", "Kväve", "Kol"])
 q3 = Frågor("Vetenskap", "Hur många ben har en vuxen människa normalt?", "206", ["207", "201", "212"])
 q4 = Frågor("Vetenskap", "Vad kallas den process där växter omvandlar solljus till energi?", "Fotosyntes", ["Förbränning", "Cellandning", "Fermentering"])
@@ -95,6 +113,13 @@ q18 = Frågor("Historia", "Vem var statsminister i Sverige under andra världskr
 q19 = Frågor("Historia", "I vilket land startade den industriella revolutionen?", "Storbritannien", ["USA", "Frankrike", "Tyskland"])
 q20 = Frågor("Historia", "Vilket år blev Sverige medlem i EU?", "1995", ["1990", "1993", "2001"])
 
+#FRÅGOR SAMLING
+vetenskap_frågor = [q1, q2, q3, q4, q5]
+matematik_frågor = [q6, q7, q8, q9, q10]
+popkultur_frågor = [q11, q12, q13, q14, q15]
+historia_frågor = [q16, q17, q18, q19, q20]
+
+alla_frågor =[q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20]
 
 while True:
     try:
@@ -106,6 +131,11 @@ while True:
         programledare = Person("René", 48, "Man") #Skriver in information för programledaren
         print(hämta_person_info(användare)) #Printar allt information om användaren
         print(hämta_person_info(programledare)) #Printar allt information om programledaren
+
+        print(f"Så ja {användare.get_namn()}, är du redo för frågorna?")
+        input("")
+        print(f"Sorgligen nog kan jag inte förstå det, fast så börjar vi med frågorna!")
+        random.choice(alla_frågor).ställ_fråga()
 
         break
 
