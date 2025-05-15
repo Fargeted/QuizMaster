@@ -1,4 +1,5 @@
 import random
+import time
 
 class Person:
     def __init__(self, namn, ålder, kön):
@@ -69,11 +70,14 @@ class Frågor:
             val = int(input("\n|Ditt svar 1-4|: "))
             if alternativ[val-1] == self.__rätt_svar: #listan har en värde från 0 - 3 och alternativen visar 1 - 4, därför måste svaret minskas med 1 för att kontrollera att svaret var rätt
                 print("Korrekt!")
+                return True
             else:
                 print(f"Fel! Rätt svar var: {self.__rätt_svar}")
+                return False
         
         except:
             print("Ogiltig svar.")
+            return False
             
 
 #FUNKTIONER
@@ -82,6 +86,34 @@ def hämta_person_info(gubbe): # Hämtar allt information om användaren ifall d
 
 def hämta_fråga(fråga): #hämtar frågor och printar det lik hämta_person_info() funktionen ovanför
     return fråga.get_kategori(), fråga.get_fråga_text(), fråga.get_rätt_svar(), fråga.get_fel_svar() 
+
+def checkpoint(svar, verifikation):
+    print(f"\nVänta nu, du har nått en checkpoint!\nSå ja {användare.get_namn()}, Du har nu nått {poäng} poäng och fått {svar} frågor rätt!")
+    print(f"Eftersom du har nu fått {svar} frågor rätt så har du valet att antingen sluta nu, vinna och ta med dig alla dina poäng.")
+    print(f"Eller så kan du fortsätta vidare och få 25% mer poäng för varje fråga du får rätt! \nDetta multiplikator även byggs på ifall du når nästa checkpoint!")
+    print(f"\nSå, vill du lämna eller stanna, {användare.get_namn()}?")
+
+    while True:
+        try:
+            val = int(input("|1 = lämna|\n|2 = stanna|\n "))
+            if val == 1:
+                print("\nSå ledsen att höra det, hoppas vi ses igen snart!\n")
+                verifikation = 1
+                break
+            elif val == 2:
+                print("Då så fortsätter vi!\n(Du får nu 25% mer poäng för varje fråga du får rätt)")
+                verifikation = 2
+                break
+            else: #Extra felhantering ifall användaren skriver en siffra som inte är 1 eller 2
+                print("\nSnälla skriv en siffra mellan 1 och 2")
+                continue
+        except ValueError:
+            print("\nDu behöver skriva ner antingen 1 eller 2. \n1 betyder du lämnar och vinner med dina poäng\n2 betyder du stannar och spelet fortsätter vidare\n")
+            continue
+
+    return verifikation 
+
+
 
 #FRÅGOR
 
@@ -103,7 +135,7 @@ q10 = Frågor("Matematik", "Hur räknar man ut arean av en rektangel?", "Basen x
 q11 = Frågor("Popkultur", "Vem spelade rollen som Harry Potter i filmerna?", "Daniel Radcliffe", ["Snubben från 'The Green Mile'", "Tom Felton", "Elijah Wood"])
 q12 = Frågor("Popkultur", "Vilken artist skapade albumet 'IGOR'?", "Tyler, the Creator", ["Bruno Mars", "Billie Eilish", "Fetty Wap"] )
 q13 = Frågor("Popkultur", "Vem anses vara skaparen av moderna film zombies?", "George Romero", ["Robert Kirkman", "Danny Boyle", "Abe Forsythe"])
-q14 = Frågor("Popkultur", "Vilket år visades pilotavsnitten av 'smiling friends' för första gången?", "2020", ["2021", "2022", "2019"])
+q14 = Frågor("Popkultur", "Vilket år visades pilotavsnitten av 'SMILING' för första gången?", "2020", ["2021", "2022", "2019"])
 q15 = Frågor("Popkultur", "Vilket år släpptes 'Graduation' av Kanye West?", "2007", ["2006", "2000", "2012"])
 
 "historia"
@@ -121,6 +153,23 @@ historia_frågor = [q16, q17, q18, q19, q20]
 
 alla_frågor =[q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20]
 
+# Generella funktioner / mekanik 
+programledare = Person("René", 48, "Man") #Skriver in information för programledaren
+
+"Grund funktioner"
+poäng = 0 # Hur många poäng användaren har
+liv = 5 # Hur många liv användaren har kvar
+
+"Extra"
+multiplier = 1 # Ökar antalet poäng om användaren når en tillräcklig lång nivå
+svar= 0 # Hur många svar användaren får rätt
+fel_svar = 0 # Hur många svar användaren har fått fel
+counter = 0 # räknar hur många gånger while loopen har gått
+
+"Viktig"
+verifikation = 0 # Används så att användaren inte fastnar i en checkpoint loop, 1 betyder programmet stängs, 2 betyder programmet fortsätter och multiplikatorn adderas med .25
+
+
 while True:
     try:
         namn = input("\nVad heter du?\n")
@@ -128,14 +177,36 @@ while True:
         kön =  input("\nÄr du en man eller en kvinna?\n")
 
         användare = Person(namn.capitalize(), ålder, kön.capitalize()) #Tar variablerna ovanför och sparar det i variabeln användare
-        programledare = Person("René", 48, "Man") #Skriver in information för programledaren
-        print(hämta_person_info(användare)) #Printar allt information om användaren
-        print(hämta_person_info(programledare)) #Printar allt information om programledaren
-
-        print(f"Så ja {användare.get_namn()}, är du redo för frågorna?")
+        
+        print(f"\nSå ja {användare.get_namn()}, är du redo för frågorna?")
         input("")
-        print(f"Sorgligen nog kan jag inte förstå det, fast så börjar vi med frågorna!")
-        random.choice(alla_frågor).ställ_fråga()
+        print(f"\nHörde inte vad du sa men låt oss börja med frågorna!")
+        while liv != 0:
+            if svar == 5 and verifikation == 0: # Om användaren når 250 poäng, når användaren en checkpoint
+                verifikation = checkpoint(svar, verifikation)
+                if verifikation == 1:
+                    print(f"|Highscore: {poäng}|\n|Antal rätt svar: {svar}|\n|Antal fel svar: {fel_svar}|\n|Antal frågor ställt: {counter}|")
+                    quit()
+                elif verifikation == 2:
+                    multiplier += 0.25
+                    continue
+            #Frågor
+            question = random.choice(alla_frågor).ställ_fråga()
+            counter += 1
+            if question == True:
+                svar += 1
+                poäng += 50 * multiplier # ökar poängen med ett antal av 50
+                print(f"\nDu har fått {poäng} poäng!\nLåt oss fortsätta till andra frågan!")
+                time.sleep(2) # väntar 2 sekunder tills nästa kod följs
+                continue
+
+            elif question == False:
+                liv -= 1
+                fel_svar += 1
+                print(f"\nDu har {liv} chanser kvar\nLåt oss fortsätta till andra frågan")
+                time.sleep(2)
+                continue
+
 
         break
 
