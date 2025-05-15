@@ -95,14 +95,14 @@ def checkpoint(svar, verifikation):
 
     while True:
         try:
-            val = int(input("|1 = lämna|\n|2 = stanna|\n "))
+            val = int(input("|1 = lämna|\n|2 = stanna|\n"))
             if val == 1:
                 print("\nSå ledsen att höra det, hoppas vi ses igen snart!\n")
-                verifikation = 1
+                verifikation = False
                 break
             elif val == 2:
                 print("\nDå så fortsätter vi!\n(Du får nu 25% mer poäng för varje fråga du får rätt)")
-                verifikation = 2
+                verifikation = True
                 break
             else: #Extra felhantering ifall användaren skriver en siffra som inte är 1 eller 2
                 print("\nSnälla skriv en siffra mellan 1 och 2")
@@ -116,6 +116,15 @@ def checkpoint(svar, verifikation):
 def highscore(poäng, rätt_svar, fel_svar, counter):
     print(f"\n|Highscore: {poäng}\n|Antal rätt svar: {rätt_svar}\n|Antal fel svar: {fel_svar}\n|Antal frågor ställt: {counter}")
     return
+
+def hantera_checkpoint(verifikation, multiplier, rätt_svar, poäng, fel_svar, counter):
+    verifikation = checkpoint(rätt_svar, verifikation)
+    if verifikation == False:
+        highscore(poäng, rätt_svar, fel_svar, counter)
+        quit()
+    elif verifikation == True:
+        multiplier += 0.25
+    return verifikation, multiplier
 
 #FRÅGOR
 
@@ -169,7 +178,7 @@ fel_svar = 0 # Hur många svar användaren har fått fel
 counter = 0 # räknar hur många gånger while loopen har gått
 
 "Viktig"
-verifikation = 0 # Används så att användaren inte fastnar i en checkpoint loop, 1 betyder programmet stängs, 2 betyder programmet fortsätter och multiplikatorn adderas med .25
+verifikation = False # Används så att användaren inte fastnar i en checkpoint loop, False betyder programmet stängs (enligt en funktion), True betyder programmet fortsätter och multiplikatorn adderas med .25
 
 while True:
     try:
@@ -182,18 +191,20 @@ while True:
         print(f"\nSå ja {användare.get_namn()}, är du redo för frågorna?")
         input("")
         print(f"\nHörde inte vad du sa men låt oss börja med frågorna!")
-        while liv != 0:
-            if rätt_svar == 5 and verifikation == 0: # Om användaren når 250 poäng, når användaren en checkpoint
-                verifikation = checkpoint(rätt_svar, verifikation)
-                if verifikation == 1:
-                    highscore(poäng, rätt_svar, fel_svar, counter)
-                    quit()
-                elif verifikation == 2:
-                    multiplier += 0.25
-                    continue
-            #Frågor
-            question = random.choice(alla_frågor).ställ_fråga()
+        while liv != 0 and alla_frågor: #Kollar om spelaren har liv kvar och om det finns frågor kvar
+            
+            #CHECKPOINTS
+            if rätt_svar == 5 and verifikation == False: # Om användaren får 5 svar rätt, når användaren en checkpoint
+                verifikation, multiplier = hantera_checkpoint(verifikation, multiplier, rätt_svar, poäng, fel_svar, counter)
+
+            #FRÅGOR
+            fråga = random.choice(alla_frågor)
+            question = fråga.ställ_fråga()
+            alla_frågor.remove(fråga)
+            #Koden ovanför säkerställer att den samma fråga inte ställs igen efter den är besvarat
             counter += 1
+
+            #SPEL
             if question == True:
                 rätt_svar += 1
                 poäng += 50 * multiplier # ökar poängen med ett antal av 50
@@ -207,7 +218,6 @@ while True:
                 print(f"\nDu har {liv} chanser kvar")
                 time.sleep(2)
                 continue
-
 
         break
 
