@@ -101,7 +101,7 @@ def checkpoint(svar, verifikation):
                 verifikation = 1
                 break
             elif val == 2:
-                print("Då så fortsätter vi!\n(Du får nu 25% mer poäng för varje fråga du får rätt)")
+                print("\nDå så fortsätter vi!\n(Du får nu 25% mer poäng för varje fråga du får rätt)")
                 verifikation = 2
                 break
             else: #Extra felhantering ifall användaren skriver en siffra som inte är 1 eller 2
@@ -113,7 +113,9 @@ def checkpoint(svar, verifikation):
 
     return verifikation 
 
-
+def highscore(poäng, rätt_svar, fel_svar, counter):
+    print(f"\n|Highscore: {poäng}\n|Antal rätt svar: {rätt_svar}\n|Antal fel svar: {fel_svar}\n|Antal frågor ställt: {counter}")
+    return
 
 #FRÅGOR
 
@@ -135,7 +137,7 @@ q10 = Frågor("Matematik", "Hur räknar man ut arean av en rektangel?", "Basen x
 q11 = Frågor("Popkultur", "Vem spelade rollen som Harry Potter i filmerna?", "Daniel Radcliffe", ["Snubben från 'The Green Mile'", "Tom Felton", "Elijah Wood"])
 q12 = Frågor("Popkultur", "Vilken artist skapade albumet 'IGOR'?", "Tyler, the Creator", ["Bruno Mars", "Billie Eilish", "Fetty Wap"] )
 q13 = Frågor("Popkultur", "Vem anses vara skaparen av moderna film zombies?", "George Romero", ["Robert Kirkman", "Danny Boyle", "Abe Forsythe"])
-q14 = Frågor("Popkultur", "Vilket år visades pilotavsnitten av 'SMILING' för första gången?", "2020", ["2021", "2022", "2019"])
+q14 = Frågor("Popkultur", "Vilket år visades pilotavsnitten av 'SMILING FRIENDS' för första gången?", "2020", ["2021", "2022", "2019"])
 q15 = Frågor("Popkultur", "Vilket år släpptes 'Graduation' av Kanye West?", "2007", ["2006", "2000", "2012"])
 
 "historia"
@@ -158,17 +160,16 @@ programledare = Person("René", 48, "Man") #Skriver in information för programl
 
 "Grund funktioner"
 poäng = 0 # Hur många poäng användaren har
-liv = 5 # Hur många liv användaren har kvar
+liv = 3 # Hur många liv användaren har kvar
 
 "Extra"
 multiplier = 1 # Ökar antalet poäng om användaren når en tillräcklig lång nivå
-svar= 0 # Hur många svar användaren får rätt
+rätt_svar= 0 # Hur många svar användaren får rätt
 fel_svar = 0 # Hur många svar användaren har fått fel
 counter = 0 # räknar hur många gånger while loopen har gått
 
 "Viktig"
 verifikation = 0 # Används så att användaren inte fastnar i en checkpoint loop, 1 betyder programmet stängs, 2 betyder programmet fortsätter och multiplikatorn adderas med .25
-
 
 while True:
     try:
@@ -182,10 +183,10 @@ while True:
         input("")
         print(f"\nHörde inte vad du sa men låt oss börja med frågorna!")
         while liv != 0:
-            if svar == 5 and verifikation == 0: # Om användaren når 250 poäng, når användaren en checkpoint
-                verifikation = checkpoint(svar, verifikation)
+            if rätt_svar == 5 and verifikation == 0: # Om användaren når 250 poäng, når användaren en checkpoint
+                verifikation = checkpoint(rätt_svar, verifikation)
                 if verifikation == 1:
-                    print(f"|Highscore: {poäng}|\n|Antal rätt svar: {svar}|\n|Antal fel svar: {fel_svar}|\n|Antal frågor ställt: {counter}|")
+                    highscore(poäng, rätt_svar, fel_svar, counter)
                     quit()
                 elif verifikation == 2:
                     multiplier += 0.25
@@ -194,7 +195,7 @@ while True:
             question = random.choice(alla_frågor).ställ_fråga()
             counter += 1
             if question == True:
-                svar += 1
+                rätt_svar += 1
                 poäng += 50 * multiplier # ökar poängen med ett antal av 50
                 print(f"\nDu har fått {poäng} poäng!\nLåt oss fortsätta till andra frågan!")
                 time.sleep(2) # väntar 2 sekunder tills nästa kod följs
@@ -203,7 +204,7 @@ while True:
             elif question == False:
                 liv -= 1
                 fel_svar += 1
-                print(f"\nDu har {liv} chanser kvar\nLåt oss fortsätta till andra frågan")
+                print(f"\nDu har {liv} chanser kvar")
                 time.sleep(2)
                 continue
 
@@ -214,5 +215,9 @@ while True:
         print("\nSnälla skriv in ditt ålder med siffror, inte bokstäver!")
         continue
 
-
+if liv == 0:
+    print(f"\nEftersom du har inga mer chanser kvar så är det tyvärr sluten av spelet!")
+elif liv != 0:
+    print(f"\nJag, {programledare.get_namn()} som är {programledare.get_ålder()} vill gratulera dig på din vinst!")
+highscore(poäng, rätt_svar, fel_svar, counter)
 
