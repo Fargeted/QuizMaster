@@ -97,7 +97,7 @@ def checkpoint(svar, verifikation):
         try:
             val = int(input("|1 = lämna|\n|2 = stanna|\n"))
             if val == 1:
-                print("\nSå ledsen att höra det, hoppas vi ses igen snart!\n")
+                print("Så ledsen att höra det, hoppas vi ses igen snart!\n")
                 verifikation = False
                 break
             elif val == 2:
@@ -118,51 +118,71 @@ def highscore(poäng, rätt_svar, fel_svar, counter):
     return
 
 def hantera_checkpoint(verifikation, multiplier, rätt_svar, poäng, fel_svar, counter):
-    verifikation = checkpoint(rätt_svar, verifikation)
-    if verifikation == False:
-        highscore(poäng, rätt_svar, fel_svar, counter)
-        quit()
-    elif verifikation == True:
-        multiplier += 0.25
+    if rätt_svar == 5 and verifikation <1: 
+        verifikation = checkpoint(rätt_svar, verifikation)
+        if verifikation == False:
+            highscore(poäng, rätt_svar, fel_svar, counter)
+            quit()
+        elif verifikation == True:
+            multiplier += 0.25
+            verifikation = 1 # Första checkpoint har blivit passerad
+
+    elif rätt_svar == 10 and verifikation <2: 
+        verifikation = checkpoint(rätt_svar, verifikation)
+        if verifikation == False:
+            highscore(poäng, rätt_svar, fel_svar, counter)
+            quit()
+        elif verifikation == True:
+            multiplier += 0.25
+            verifikation = 2 # andra checkpoint har blivit passerad
+    
+    elif rätt_svar == 15 and verifikation <3: 
+        verifikation = checkpoint(rätt_svar, verifikation)
+        if verifikation == False:
+            highscore(poäng, rätt_svar, fel_svar, counter)
+            quit()
+        elif verifikation == True:
+            multiplier += 0.25
+            verifikation = 3 # tredje checkpoint har blivit passerad
     return verifikation, multiplier
 
 #FRÅGOR
+frågedata = { 
+    "vetenskap": [ #listor används för att enklare kunna sortera mellan kategoriers frågor och gör det enklare att lägga till flera frågor i framtiden och vilken kategori användaren vill svara.
+        {"fråga": "Vad heter den största planet i vårt solsystem?", "rätt": "Jupiter", "fel": ["Saturnus", "Mars", "Jorden"]},
+        {"fråga": "Vilket grundämne har kemiska beteckningen O?", "rätt": "Syre", "fel": ["Väte", "Kväve", "Kol"]},
+        {"fråga": "Hur många ben har en vuxen människa normalt?", "rätt": "206", "fel": ["207", "201", "212"]},
+        {"fråga": "Vad kallas den process där växter omvandlar solljus till energi?", "rätt": "Fotosyntes", "fel": ["Förbränning", "Cellandning", "Fermentering"]},
+        {"fråga": "Vilken vetenskapsmän formulerade gravitationslagen?", "rätt": "Isaac Newton", "fel": ["Albert Einstein", "Galileo Galilei", "Nikola Tesla"]}
+    ],
+    "matematik": [
+        {"fråga": "Vad är 7 x 8?", "rätt": "56", "fel": ["54", "67", "49"]},
+        {"fråga": "Vad är roten ur 144?", "rätt": "12", "fel": ["14", "11", "8"]},
+        {"fråga": "Hur många grader är en rät vinkel?", "rätt": "90", "fel": ["45", "180", "75"]},
+        {"fråga": "Vad är de första två decimal tecken inom PI?", "rätt": "14", "fel": ["17", "15", "12"]},
+        {"fråga": "Hur räknar man ut arean av en rektangel?", "rätt": "Basen x Höjden", "fel": ["Basen x Höjden x Längden", "Höjden delad på basen", "Kvadratroten av basen"]}
+    ],
+    "popkultur": [
+        {"fråga": "Vem spelade rollen som Harry Potter i filmerna?", "rätt": "Daniel Radcliffe", "fel": ["Snubben från 'The Green Mile'", "Tom Felton", "Elijah Wood"]},
+        {"fråga": "Vilken artist skapade albumet 'IGOR'?", "rätt": "Tyler, the Creator", "fel": ["Bruno Mars", "Billie Eilish", "Fetty Wap"]},
+        {"fråga": "Vem anses vara skaparen av moderna film zombies?", "rätt": "George Romero", "fel": ["Robert Kirkman", "Danny Boyle", "Abe Forsythe"]},
+        {"fråga": "Vilket år visades pilotavsnitten av 'SMILING FRIENDS' för första gången?", "rätt": "2020", "fel": ["2021", "2022", "2019"]},
+        {"fråga": "Vilket år släpptes 'Graduation' av Kanye West?", "rätt": "2007", "fel": ["2006", "2000", "2012"]}
+    ],
+    "historia": [
+        {"fråga": "Vem var Sveriges kung år 1700?", "rätt": "Karl XII", "fel": ["Gustav II Adolf", "Karl XI", "Oscar I"]},
+        {"fråga": "När föll Berlinmuren?", "rätt": "1989", "fel": ["1991", "1985", "1990"]},
+        {"fråga": "Vem var statsminister i Sverige under andra världskriget?", "rätt": "Per Albin Hansson", "fel": ["Tage Erlander", "Olof Palme", "Carl Gustaf Ekman"]},
+        {"fråga": "I vilket land startade den industriella revolutionen?", "rätt": "Storbritannien", "fel": ["USA", "Frankrike", "Tyskland"]},
+        {"fråga": "Vilket år blev Sverige medlem i EU?", "rätt": "1995", "fel": ["1990", "1993", "2001"]}
+    ]
+} 
 
-"vetenskap"
-q1 = Frågor("Vetenskap", "Vad heter den största planet i vårt solsystem?", "Jupiter", ["Saturnus", "Mars", "Jorden"]) #Sista kategorin ligger i en lista så att mer än 1 fråga kan passa i fel fråga kategorin
-q2 = Frågor("Vetenskap", "Vilket grundämne har kemiska beteckningen O?", "Syre", ["Väte", "Kväve", "Kol"])
-q3 = Frågor("Vetenskap", "Hur många ben har en vuxen människa normalt?", "206", ["207", "201", "212"])
-q4 = Frågor("Vetenskap", "Vad kallas den process där växter omvandlar solljus till energi?", "Fotosyntes", ["Förbränning", "Cellandning", "Fermentering"])
-q5 = Frågor("Vetenskap", "Vilken vetenskapsmän formulerade gravitationslagen?", "Isaac Newton", ["Albert Einstein", "Galileo Galilei", "Nikola Tesla"])
-
-"matte"
-q6 = Frågor("Matematik", "Vad är 7 x 8?", "56", ["54", "67", "49"])
-q7 = Frågor("Matematik", "Vad är roten ur 144?", "12", ["14", "11", "8"])
-q8 = Frågor("Matematik", "Hur många grader är en rät vinkel?", "90", ["45", "180", "75"])
-q9 = Frågor("Matematik", "Vad är de första två decimal tecken inom PI?", "14", ["17", "15", "12" ])
-q10 = Frågor("Matematik", "Hur räknar man ut arean av en rektangel?", "Basen x Höjden", ["Basen x Höjden x Längden", "Höjden delad på basen", "Kvadratroten av basen"])
-
-"popkultur"
-q11 = Frågor("Popkultur", "Vem spelade rollen som Harry Potter i filmerna?", "Daniel Radcliffe", ["Snubben från 'The Green Mile'", "Tom Felton", "Elijah Wood"])
-q12 = Frågor("Popkultur", "Vilken artist skapade albumet 'IGOR'?", "Tyler, the Creator", ["Bruno Mars", "Billie Eilish", "Fetty Wap"] )
-q13 = Frågor("Popkultur", "Vem anses vara skaparen av moderna film zombies?", "George Romero", ["Robert Kirkman", "Danny Boyle", "Abe Forsythe"])
-q14 = Frågor("Popkultur", "Vilket år visades pilotavsnitten av 'SMILING FRIENDS' för första gången?", "2020", ["2021", "2022", "2019"])
-q15 = Frågor("Popkultur", "Vilket år släpptes 'Graduation' av Kanye West?", "2007", ["2006", "2000", "2012"])
-
-"historia"
-q16 = Frågor("Historia", "Vem var Sveriges kung år 1700?", "Karl XII", ["Gustav II Adolf", "Karl XI", "Oscar I"])
-q17 = Frågor("Historia", "När föll Berlinmuren?", "1989", ["1991", "1985", "1990"])
-q18 = Frågor("Historia", "Vem var statsminister i Sverige under andra världskriget?", "Per Albin Hansson", ["Tage Erlander", "Olof Palme", "Carl Gustaf Ekman"])
-q19 = Frågor("Historia", "I vilket land startade den industriella revolutionen?", "Storbritannien", ["USA", "Frankrike", "Tyskland"])
-q20 = Frågor("Historia", "Vilket år blev Sverige medlem i EU?", "1995", ["1990", "1993", "2001"])
-
-#FRÅGOR SAMLING
-vetenskap_frågor = [q1, q2, q3, q4, q5]
-matematik_frågor = [q6, q7, q8, q9, q10]
-popkultur_frågor = [q11, q12, q13, q14, q15]
-historia_frågor = [q16, q17, q18, q19, q20]
-
-alla_frågor =[q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11, q12, q13, q14, q15, q16, q17, q18, q19, q20]
+alla_frågor = [] #alla_frågor är en tom lista som ska fyllas upp med resten av frågorna från frågedata dictionary
+for kategori, frågor_lista in frågedata.items(): #itererar mellan varje värde och nyckel i frågedata där "kategori" är kategori, alltså 'matematik', 'vetenskap' osv.
+    for data in frågor_lista: # loopar igenom varje fråga inom listan av frågor, alltså "När släpptes Graduation av Kanye west?", data innehåller även varje fråga innehåll (förutom kategori)
+        fråga = Frågor(kategori, data["fråga"], data["rätt"], data["fel"]) # skapar nya frågor objekt genom att använda klassen som en slags 'konstruktor'
+        alla_frågor.append(fråga) # lägger till den nya fråga objekten till listan 'alla_frågor'
 
 # Generella funktioner / mekanik 
 programledare = Person("René", 48, "Man") #Skriver in information för programledaren
@@ -178,13 +198,13 @@ fel_svar = 0 # Hur många svar användaren har fått fel
 counter = 0 # räknar hur många gånger while loopen har gått
 
 "Viktig"
-verifikation = False # Används så att användaren inte fastnar i en checkpoint loop, False betyder programmet stängs (enligt en funktion), True betyder programmet fortsätter och multiplikatorn adderas med .25
+verifikation = 0 # Används så att användaren inte fastnar i en checkpoint loop, False betyder programmet stängs (enligt en funktion), True betyder programmet fortsätter och multiplikatorn adderas med .25
 
 while True:
     try:
         namn = input("\nVad heter du?\n")
         ålder = int(input("\nHur gammal är du?\n"))
-        kön =  input("\nÄr du en man eller en kvinna?\n")
+        kön =  input("\nVad är ditt kön?\n")
 
         användare = Person(namn.capitalize(), ålder, kön.capitalize()) #Tar variablerna ovanför och sparar det i variabeln användare
         
@@ -194,8 +214,7 @@ while True:
         while liv != 0 and alla_frågor: #Kollar om spelaren har liv kvar och om det finns frågor kvar
             
             #CHECKPOINTS
-            if rätt_svar == 5 and verifikation == False: # Om användaren får 5 svar rätt, når användaren en checkpoint
-                verifikation, multiplier = hantera_checkpoint(verifikation, multiplier, rätt_svar, poäng, fel_svar, counter)
+            verifikation, multiplier = hantera_checkpoint(verifikation, multiplier, rätt_svar, poäng, fel_svar, counter)
 
             #FRÅGOR
             fråga = random.choice(alla_frågor)
@@ -227,7 +246,23 @@ while True:
 
 if liv == 0:
     print(f"\nEftersom du har inga mer chanser kvar så är det tyvärr sluten av spelet!")
+
+elif liv != 0 and rätt_svar == 20:
+    time.sleep(2)
+    print(f"\nVänta...")
+    time.sleep(1)
+    print(f"Finns inga mer frågor kvar att ställas!")
+    time.sleep(1)
+    print(f"\nGrattis {användare.get_namn()}! \nDu har besvarat varje fråga rätt!")
+    print(f"{användare.get_namn()} du verkligen är den äkta QuizMaster!")
+
 elif liv != 0:
-    print(f"\nJag, {programledare.get_namn()} som är {programledare.get_ålder()} vill gratulera dig på din vinst!")
-highscore(poäng, rätt_svar, fel_svar, counter)
+    time.sleep(2)
+    print(f"\nVänta...")
+    time.sleep(1)
+    print(f"Finns inga mer frågor kvar att ställas!")
+    time.sleep(1)
+    print(f"\nJag, {programledare.get_namn()} som är {programledare.get_ålder()} år gammal, gratulerar dig djupt om din vinst!")
+
+highscore(poäng, rätt_svar, fel_svar, counter) # Highscore visas oavsett vad
 
