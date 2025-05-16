@@ -76,7 +76,9 @@ class Frågor:
                 return False
         
         except:
-            print("Ogiltig svar.")
+            print("Du behöver välja en svar mellan 1 - 4")
+            print("Dock så räknas det som ett svar så tyvärr förlorar du ett liv")
+            print(f"Btw, rätt svar var: {self.__rätt_svar}")
             return False
             
 
@@ -165,7 +167,7 @@ frågedata = {
     "popkultur": [
         {"fråga": "Vem spelade rollen som Harry Potter i filmerna?", "rätt": "Daniel Radcliffe", "fel": ["Snubben från 'The Green Mile'", "Tom Felton", "Elijah Wood"]},
         {"fråga": "Vilken artist skapade albumet 'IGOR'?", "rätt": "Tyler, the Creator", "fel": ["Bruno Mars", "Billie Eilish", "Fetty Wap"]},
-        {"fråga": "Vem anses vara skaparen av moderna film zombies?", "rätt": "George Romero", "fel": ["Robert Kirkman", "Danny Boyle", "Abe Forsythe"]},
+        {"fråga": "Vem anses vara fadern av den moderna zombie genre?", "rätt": "George Romero", "fel": ["Robert Kirkman", "Danny Boyle", "Abe Forsythe"]},
         {"fråga": "Vilket år visades pilotavsnitten av 'SMILING FRIENDS' för första gången?", "rätt": "2020", "fel": ["2021", "2022", "2019"]},
         {"fråga": "Vilket år släpptes 'Graduation' av Kanye West?", "rätt": "2007", "fel": ["2006", "2000", "2012"]}
     ],
@@ -217,9 +219,9 @@ while True:
             verifikation, multiplier = hantera_checkpoint(verifikation, multiplier, rätt_svar, poäng, fel_svar, counter)
 
             #FRÅGOR
-            fråga = random.choice(alla_frågor)
-            question = fråga.ställ_fråga()
-            alla_frågor.remove(fråga)
+            fråga = random.choice(alla_frågor) # slumpmässigt ställer en fråga
+            question = fråga.ställ_fråga() # program ledaren ger användaren en fråga
+            alla_frågor.remove(fråga) # tar bort frågan efter den har blivit ställt
             #Koden ovanför säkerställer att den samma fråga inte ställs igen efter den är besvarat
             counter += 1
 
@@ -244,10 +246,11 @@ while True:
         print("\nSnälla skriv in ditt ålder med siffror, inte bokstäver!")
         continue
 
+#SLUTET AV SPELET 
 if liv == 0:
     print(f"\nEftersom du har inga mer chanser kvar så är det tyvärr sluten av spelet!")
 
-elif liv != 0 and rätt_svar == 20:
+elif liv != 0 and fel_svar == 0: # om användaren får varje svar rätt så visar detta
     time.sleep(2)
     print(f"\nVänta...")
     time.sleep(1)
@@ -256,7 +259,7 @@ elif liv != 0 and rätt_svar == 20:
     print(f"\nGrattis {användare.get_namn()}! \nDu har besvarat varje fråga rätt!")
     print(f"{användare.get_namn()} du verkligen är den äkta QuizMaster!")
 
-elif liv != 0:
+elif liv != 0 and fel_svar >= 1: # om användaren vinner men fick inte varje svar rätt så visar detta
     time.sleep(2)
     print(f"\nVänta...")
     time.sleep(1)
