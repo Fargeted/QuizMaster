@@ -120,32 +120,15 @@ def highscore(poäng, rätt_svar, fel_svar, counter):
     return
 
 def hantera_checkpoint(verifikation, multiplier, rätt_svar, poäng, fel_svar, counter):
-    if rätt_svar == 5 and verifikation <1: 
+    if rätt_svar % 5 == 0 and rätt_svar // 5 > verifikation: #rätt_svar % 5 == 0 kollar om antalet rätt svar är en antal av 5 t.ex. 5, 10, 15, 20 osv.
+        # rätt_svar // 5 > verifikation säkerställer att checkpointen triggar bara ett gång, t.ex. när rätt svar går från 4-5 och inte varje gång användaren har 5.
         verifikation = checkpoint(rätt_svar, verifikation)
         if verifikation == False:
             highscore(poäng, rätt_svar, fel_svar, counter)
             quit()
         elif verifikation == True:
             multiplier += 0.25
-            verifikation = 1 # Första checkpoint har blivit passerad
-
-    elif rätt_svar == 10 and verifikation <2: 
-        verifikation = checkpoint(rätt_svar, verifikation)
-        if verifikation == False:
-            highscore(poäng, rätt_svar, fel_svar, counter)
-            quit()
-        elif verifikation == True:
-            multiplier += 0.25
-            verifikation = 2 # andra checkpoint har blivit passerad
-    
-    elif rätt_svar == 15 and verifikation <3: 
-        verifikation = checkpoint(rätt_svar, verifikation)
-        if verifikation == False:
-            highscore(poäng, rätt_svar, fel_svar, counter)
-            quit()
-        elif verifikation == True:
-            multiplier += 0.25
-            verifikation = 3 # tredje checkpoint har blivit passerad
+            verifikation = rätt_svar // 5 # uppdaterar till checkpoint nivå, 5 = 1, 10 = 2 osv.
     return verifikation, multiplier
 
 #FRÅGOR
