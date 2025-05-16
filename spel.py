@@ -131,30 +131,80 @@ def hantera_checkpoint(verifikation, multiplier, rätt_svar, poäng, fel_svar, c
             verifikation = rätt_svar // 5 # uppdaterar till checkpoint nivå, 5 = 1, 10 = 2 osv.
     return verifikation, multiplier
 
+def välj_frågor(frågedata):
+    ursprungliga_kategorier = list(frågedata.keys()) #sparar de ursprungliga kategorier och frågor så att det går att ändra utan att påverka originalet
+
+    while True:
+        valda_kategorier = ursprungliga_kategorier.copy() #kopierar och sparar de ursprungliga kategorier
+
+        print(f"\nInnan vi börjar så vill jag fråga dig om du vill välja ta bort något kategori av frågor?")
+
+        while True:
+            if not valda_kategorier: # Kollar om listan med valda kategorier är tom, om det är så följs den här rad av kod
+                print("\nAlla kategorier har tagits bort, du måste behålla minst en kategori och därför återställs allt!")
+                time.sleep(2)
+                break
+
+            print(f"De kategorier vi har just nu är:\n")
+            for i, kategori in enumerate(valda_kategorier, 1): # loopar igenom alla kategorier i listan och ger varje en index som börjar på 1
+                print(f"{i}. {kategori}") #I är en integer som börjar från 1 och fortsätter vidare sådär gällande hur många kategorier det finns,
+                # kategori variabeln printar bara kategoriets str värde
+
+            print("\nSkriv siffran på en kategori du vill TA BORT!!!!")
+            print("(Skriv 'start' för att börja spelet med de nuvarande kategorier)")
+
+            val = input("\n|Ditt val 1-4 eller 'start'|: ").strip().lower() # tar in input av användaren och tar bort mellanslag i början och gör texten till små bokstäver
+            #anledningen till varför strip används då är ifall användaren råkar lägga till en extra mellanslag i sitt skrivande men ändå skriv rätt, därför används strip för att förbättra användar upplevelsen
+
+            if val == "start": # kollar om användaren skrev "start" 
+                valda_frågor = [] #valda_frågor är en tom lista som ska fyllas upp med resten av frågorna från frågedata dictionary
+                for kategori in valda_kategorier:  #loopar igenom varje kategori som inte har blivit tagits bort
+                    for data in frågedata[kategori]: # loopar igenom varje fråga inom listan av frågor, alltså "När släpptes Graduation av Kanye west?", data innehåller även varje fråga innehåll (förutom kategori)
+                        fråga = Frågor(kategori, data["fråga"], data["rätt"], data["fel"]) # skapar nya frågor objekt genom att använda klassen som en slags 'konstruktor'
+                        valda_frågor.append(fråga) # lägger till den nya fråga objekten till listan 'valda_frågor'
+                return valda_frågor #return sker bara om användaren skriver "start"
+            
+            else: # om användaren inte skrev start, så kommer programmet försöka tolka inputen som ett siffra
+                try: 
+                    index = int(val) - 1 # försöker konvertera inputen till en heltal, justerat så att 1 blir index 0 osv.
+                    if 0 <= index < len(valda_kategorier): # Kontrollerar att siffran är inom intervall för listan av kategorier
+                        borttagen = valda_kategorier.pop(index) # tar bort den valda kategorin från listan och sparar dess namn
+                        print(f"\n'Kategorin' {borttagen} togs bort.") # visar vilket kategori som togs bort
+                        continue
+                    else:
+                        print("Siffran är utanför giltig intervall.\n") # felhantering ifall användaren skriver ett siffra utanför de tillgängliga kategorier t.ex. 1. Matematik, 2. Vetenskap osv.
+                        time.sleep(2)
+                        continue
+                except ValueError:
+                    print("\nSnälla skriv antinget ett siffra eller 'start' för att starta spelet!") # felhantering ifall användaren skriver nåt som inte är en siffra
+                    time.sleep(2)
+                    continue
+
+    
 #FRÅGOR
 frågedata = { 
-    "vetenskap": [ #listor används för att enklare kunna sortera mellan kategoriers frågor och gör det enklare att lägga till flera frågor i framtiden och vilken kategori användaren vill svara.
+    "Vetenskap": [ #listor används för att enklare kunna sortera mellan kategoriers frågor och gör det enklare att lägga till flera frågor i framtiden och vilken kategori användaren vill svara.
         {"fråga": "Vad heter den största planet i vårt solsystem?", "rätt": "Jupiter", "fel": ["Saturnus", "Mars", "Jorden"]},
         {"fråga": "Vilket grundämne har kemiska beteckningen O?", "rätt": "Syre", "fel": ["Väte", "Kväve", "Kol"]},
         {"fråga": "Hur många ben har en vuxen människa normalt?", "rätt": "206", "fel": ["207", "201", "212"]},
         {"fråga": "Vad kallas den process där växter omvandlar solljus till energi?", "rätt": "Fotosyntes", "fel": ["Förbränning", "Cellandning", "Fermentering"]},
         {"fråga": "Vilken vetenskapsmän formulerade gravitationslagen?", "rätt": "Isaac Newton", "fel": ["Albert Einstein", "Galileo Galilei", "Nikola Tesla"]}
     ],
-    "matematik": [
+    "Matematik": [
         {"fråga": "Vad är 7 x 8?", "rätt": "56", "fel": ["54", "67", "49"]},
         {"fråga": "Vad är roten ur 144?", "rätt": "12", "fel": ["14", "11", "8"]},
         {"fråga": "Hur många grader är en rät vinkel?", "rätt": "90", "fel": ["45", "180", "75"]},
         {"fråga": "Vad är de första två decimal tecken inom PI?", "rätt": "14", "fel": ["17", "15", "12"]},
         {"fråga": "Hur räknar man ut arean av en rektangel?", "rätt": "Basen x Höjden", "fel": ["Basen x Höjden x Längden", "Höjden delad på basen", "Kvadratroten av basen"]}
     ],
-    "popkultur": [
+    "Popkultur": [
         {"fråga": "Vem spelade rollen som Harry Potter i filmerna?", "rätt": "Daniel Radcliffe", "fel": ["Snubben från 'The Green Mile'", "Tom Felton", "Elijah Wood"]},
         {"fråga": "Vilken artist skapade albumet 'IGOR'?", "rätt": "Tyler, the Creator", "fel": ["Bruno Mars", "Billie Eilish", "Fetty Wap"]},
         {"fråga": "Vem anses vara fadern av den moderna zombie genre?", "rätt": "George Romero", "fel": ["Robert Kirkman", "Danny Boyle", "Abe Forsythe"]},
         {"fråga": "Vilket år visades pilotavsnitten av 'SMILING FRIENDS' för första gången?", "rätt": "2020", "fel": ["2021", "2022", "2019"]},
         {"fråga": "Vilket år släpptes 'Graduation' av Kanye West?", "rätt": "2007", "fel": ["2006", "2000", "2012"]}
     ],
-    "historia": [
+    "Historia": [
         {"fråga": "Vem var Sveriges kung år 1700?", "rätt": "Karl XII", "fel": ["Gustav II Adolf", "Karl XI", "Oscar I"]},
         {"fråga": "När föll Berlinmuren?", "rätt": "1989", "fel": ["1991", "1985", "1990"]},
         {"fråga": "Vem var statsminister i Sverige under andra världskriget?", "rätt": "Per Albin Hansson", "fel": ["Tage Erlander", "Olof Palme", "Carl Gustaf Ekman"]},
@@ -162,12 +212,6 @@ frågedata = {
         {"fråga": "Vilket år blev Sverige medlem i EU?", "rätt": "1995", "fel": ["1990", "1993", "2001"]}
     ]
 } 
-
-alla_frågor = [] #alla_frågor är en tom lista som ska fyllas upp med resten av frågorna från frågedata dictionary
-for kategori, frågor_lista in frågedata.items(): #itererar mellan varje värde och nyckel i frågedata där "kategori" är kategori, alltså 'matematik', 'vetenskap' osv.
-    for data in frågor_lista: # loopar igenom varje fråga inom listan av frågor, alltså "När släpptes Graduation av Kanye west?", data innehåller även varje fråga innehåll (förutom kategori)
-        fråga = Frågor(kategori, data["fråga"], data["rätt"], data["fel"]) # skapar nya frågor objekt genom att använda klassen som en slags 'konstruktor'
-        alla_frågor.append(fråga) # lägger till den nya fråga objekten till listan 'alla_frågor'
 
 # Generella funktioner / mekanik 
 programledare = Person("René", 48, "Man") #Skriver in information för programledaren
@@ -195,7 +239,9 @@ while True:
         
         print(f"\nSå ja {användare.get_namn()}, är du redo för frågorna?")
         input("")
-        print(f"\nHörde inte vad du sa men låt oss börja med frågorna!")
+        print(f"\nHörde inte vad du sa men låt oss fortsätta vidare!")
+        alla_frågor = välj_frågor(frågedata)
+
         while liv != 0 and alla_frågor: #Kollar om spelaren har liv kvar och om det finns frågor kvar
             
             #CHECKPOINTS
